@@ -30,8 +30,8 @@ class QuestionIndicator extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 4.0),
-      width: 10.0,
-      height: 10.0,
+      width: isCurrent ? 40.0 : 20.0,
+      height: isCurrent ? 40.0 : 20.0,
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,

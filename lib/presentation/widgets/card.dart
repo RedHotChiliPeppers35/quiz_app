@@ -9,12 +9,14 @@ class QuestionCard extends StatefulWidget {
   final int questionIndex;
   final Question question;
   final ValueChanged<int> onOptionSelected;
+  final bool isCurrent;
 
   const QuestionCard({
     Key? key,
     required this.questionIndex,
     required this.question,
     required this.onOptionSelected,
+    required this.isCurrent,
   }) : super(key: key);
 
   @override
@@ -24,7 +26,6 @@ class QuestionCard extends StatefulWidget {
 class _QuestionCardState extends State<QuestionCard> {
   late Timer _timer = Timer(Duration.zero, () {});
   late Duration _timeLeft;
-
 
   @override
   void initState() {
@@ -47,7 +48,7 @@ class _QuestionCardState extends State<QuestionCard> {
       } else {
         _timer.cancel();
         setState(() {
-           widget.question.isExpired = true;
+          widget.question.isExpired = true;
         });
         context
             .read(quizProvider.notifier)
@@ -116,8 +117,6 @@ class _QuestionCardState extends State<QuestionCard> {
               ),
             );
           }).toList(),
-
-          
         ],
       ),
     );
