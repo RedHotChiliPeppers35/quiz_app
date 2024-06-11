@@ -17,6 +17,8 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   int _currentIndex = 0;
+  final PageController _pageController = PageController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -44,8 +46,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.5,
                         child: PageView.builder(
-                          controller:
-                              PageController(initialPage: _currentIndex),
+                          controller: _pageController,
                           onPageChanged: (index) {
                             setState(() {
                               _currentIndex = index;
@@ -53,11 +54,14 @@ class _QuizScreenState extends State<QuizScreen> {
                           },
                           itemCount: questions.length,
                           itemBuilder: (context, index) {
+                            final _isSkip = questions[index].skipToNext;
                             final question = questions[index];
                             return SizedBox(
                               width: MediaQuery.of(context).size.width * 0.9,
                               height: MediaQuery.of(context).size.height * 0.5,
                               child: QuestionCard(
+                                pageController: _pageController,
+                                isSkip: _isSkip,
                                 questionIndex: index,
                                 question: question,
                                 onOptionSelected: (optionIndex) {
@@ -110,7 +114,8 @@ class _QuizScreenState extends State<QuizScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => ResultScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const ResultScreen()),
                     (Route route) => false);
               },
               child: Container(
@@ -143,7 +148,7 @@ class _QuizScreenState extends State<QuizScreen> {
         quizNotifier.submitQuiz();
 
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => ResultScreen()),
+            MaterialPageRoute(builder: (context) => const ResultScreen()),
             (Route route) => false);
       },
       child: Container(

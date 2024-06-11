@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quiz_app/data/models/question_model.dart';
+import 'package:quiz_app/domain/services/quiz_service.dart';
 import 'package:quiz_app/presentation/providers/quiz_provider.dart';
 
 class QuestionCard extends StatefulWidget {
@@ -10,15 +12,19 @@ class QuestionCard extends StatefulWidget {
   final ValueChanged<int> onOptionSelected;
   final bool isCurrent;
   final bool isQuizSubmitted;
+  final bool isSkip;
+  final PageController pageController;
 
   const QuestionCard({
-    Key? key,
+    super.key,
+    required this.pageController,
     required this.questionIndex,
     required this.question,
     required this.onOptionSelected,
     required this.isCurrent,
     required this.isQuizSubmitted,
-  }) : super(key: key);
+    required this.isSkip,
+  });
 
   @override
   _QuestionCardState createState() => _QuestionCardState();
@@ -38,7 +44,7 @@ class _QuestionCardState extends State<QuestionCard> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timeLeft.inSeconds > 0) {
         setState(() {
           _timeLeft = Duration(seconds: _timeLeft.inSeconds - 1);
@@ -54,9 +60,14 @@ class _QuestionCardState extends State<QuestionCard> {
         context
             .read(quizProvider.notifier)
             .expireQuestion(widget.questionIndex);
+
         if (!widget.isQuizSubmitted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showExpirationDialog();
+            context
+                .read(quizProvider.notifier)
+                .skipNextQuestion(widget.questionIndex);
+            widget.question.skipToNext = true;
           });
         }
       }
@@ -75,12 +86,24 @@ class _QuestionCardState extends State<QuestionCard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Times Up!'),
-          content: Text('The time for this question has expired.'),
+          title: const Text('Times Up!'),
+          content: const Text('The time for this question has expired.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                if (widget.pageController.hasClients) {
+                  log("ATA");
+                  int index = context
+                      .read(quizProvider.notifier)
+                      .nextAvailableQuestionIndex(widget.questionIndex);
+                  if (index != -1)
+                    widget.pageController.animateToPage(index,
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.easeIn);
+                  else
+                    context.read(quizProvider.notifier).submitQuiz();
+                }
               },
               child: Container(
                 width: 80,
@@ -124,7 +147,8 @@ class _QuestionCardState extends State<QuestionCard> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               widget.question.question,
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              style:
+                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
           ),
           ...widget.question.options.asMap().entries.map((entry) {

@@ -1,7 +1,6 @@
-import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/question_model.dart';
-import '../../domain/services/quiz_service.dart';
+import 'package:quiz_app/data/models/question_model.dart';
+import 'package:quiz_app/domain/services/quiz_service.dart';
 
 class QuizNotifier extends StateNotifier<List<Question>> {
   QuizNotifier(this._quizService) : super([]) {
@@ -49,7 +48,16 @@ class QuizNotifier extends StateNotifier<List<Question>> {
         else
           state[i],
     ];
-    checkAllTimersExpired();
+  }
+
+  void skipNextQuestion(int questionIndex) {
+    state = [
+      for (int i = 0; i < state.length; i++)
+        if (state[i].isExpired == true)
+          state[i].copyWith(skipToNext: true)
+        else
+          state[i],
+    ];
   }
 
   void updateTimer(int questionIndex, Duration timeLeft) {
@@ -62,22 +70,9 @@ class QuizNotifier extends StateNotifier<List<Question>> {
     ];
   }
 
-  void checkAllTimersExpired() {
-    if (state.every((question) => question.isExpired)) {
-      state = [
-        for (int i = 0; i < state.length; i++)
-          state[i].copyWith(isExpired: true)
-      ];
-    }
-  }
-
   bool quizComplete() {
     return state.every(
         (question) => question.selectedOption != null || question.isExpired);
-  }
-
-  bool allQuestionsAnswered() {
-    return state.every((question) => question.selectedOption != null);
   }
 
   bool allTimersExpired() {
@@ -90,14 +85,15 @@ class QuizNotifier extends StateNotifier<List<Question>> {
     _isQuizSubmitted = true;
   }
 
-  int? getNextUnexpiredQuestionIndex(int currentIndex) {
-    for (int i = currentIndex + 1; i < state.length; i++) {
-      if (!state[i].isExpired) return i;
+  int nextAvailableQuestionIndex(int currentQuestionIndex) {
+    for (var i = 1; i < state.length + 1; i++) {
+      int nextQuestionIndex = (currentQuestionIndex + i) % state.length;
+
+      if (!state[nextQuestionIndex].isExpired) {
+        return nextQuestionIndex;
+      }
     }
-    for (int i = 0; i < currentIndex; i++) {
-      if (!state[i].isExpired) return i;
-    }
-    return null;
+    return -1;
   }
 }
 

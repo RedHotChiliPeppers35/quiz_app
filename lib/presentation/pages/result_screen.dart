@@ -4,6 +4,8 @@ import 'package:quiz_app/presentation/providers/quiz_provider.dart';
 import 'welcome_page.dart';
 
 class ResultScreen extends ConsumerWidget {
+  const ResultScreen({super.key});
+
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     final questions = watch(quizProvider);

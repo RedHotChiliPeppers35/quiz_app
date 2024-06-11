@@ -6,6 +6,7 @@ class Question {
   bool isExpired;
   Duration timeLeft;
   final Duration initialTime;
+  bool skipToNext;
 
   Question({
     required this.question,
@@ -15,6 +16,7 @@ class Question {
     this.isExpired = false,
     this.timeLeft = const Duration(seconds: 10),
     this.initialTime = const Duration(seconds: 10),
+    this.skipToNext = false,
   });
 
   Question copyWith({
@@ -25,6 +27,7 @@ class Question {
     bool? isExpired,
     Duration? timeLeft,
     Duration? initialTime,
+    bool? skipToNext,
   }) {
     return Question(
       question: question ?? this.question,
@@ -34,6 +37,7 @@ class Question {
       isExpired: isExpired ?? this.isExpired,
       timeLeft: timeLeft ?? this.timeLeft,
       initialTime: initialTime ?? this.initialTime,
+      skipToNext: skipToNext ?? this.skipToNext,
     );
   }
 }
