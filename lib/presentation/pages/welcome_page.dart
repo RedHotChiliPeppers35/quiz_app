@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz_app/presentation/widgets/Pages/quiz_screen.dart';
+import 'package:quiz_app/presentation/pages/quiz_screen.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -30,7 +29,7 @@ class WelcomePage extends StatelessWidget {
               child: const Column(
                 children: [
                   Text(
-                    "Insturcions",
+                    "Instructions",
                     style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,

@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:quiz_app/presentation/widgets/Widgets/card.dart';
-import 'package:quiz_app/presentation/widgets/Pages/result_screen.dart';
+import 'package:quiz_app/presentation/Widgets/card.dart';
+import 'package:quiz_app/presentation/pages/result_screen.dart';
 import 'package:quiz_app/presentation/providers/quiz_provider.dart';
-import 'package:quiz_app/presentation/widgets/Widgets/question_indicator.dart';
+import 'package:quiz_app/presentation/Widgets/question_indicator.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});

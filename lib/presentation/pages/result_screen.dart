@@ -1,11 +1,7 @@
-// lib/screens/result_screen.dart
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:quiz_app/presentation/widgets/Pages/quiz_screen.dart';
-import 'package:quiz_app/presentation/widgets/Pages/welcome_page.dart';
-
-import '../../providers/quiz_provider.dart';
+import 'package:quiz_app/presentation/providers/quiz_provider.dart';
+import 'welcome_page.dart';
 
 class ResultScreen extends ConsumerWidget {
   @override
@@ -13,6 +9,7 @@ class ResultScreen extends ConsumerWidget {
     final questions = watch(quizProvider);
     final score =
         questions.where((q) => q.selectedOption == q.answerIndex).length;
+
 
     return Scaffold(
       appBar: AppBar(title: const Text('Results')),
@@ -23,12 +20,12 @@ class ResultScreen extends ConsumerWidget {
           score >= 4
               ? const Text(
                   textAlign: TextAlign.center,
-                  "Congratulations !",
+                  "Congratulations!",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 )
               : const Text(
                   textAlign: TextAlign.center,
-                  "Do you want to try it again ?",
+                  "Do you want to try it again?",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
           const SizedBox(

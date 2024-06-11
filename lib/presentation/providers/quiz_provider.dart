@@ -1,14 +1,14 @@
-// lib/providers/quiz_provider.dart
 import 'dart:async';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/models/question_model.dart';
+import '../../domain/services/quiz_service.dart';
 
 class QuizNotifier extends StateNotifier<List<Question>> {
-  QuizNotifier() : super([]) {
+  QuizNotifier(this._quizService) : super([]) {
     initQuestions();
   }
 
+  final QuizService _quizService;
   bool _isQuizSubmitted = false;
 
   void selectOption(int questionIndex, int optionIndex) {
@@ -22,33 +22,7 @@ class QuizNotifier extends StateNotifier<List<Question>> {
   }
 
   void initQuestions() {
-    state = [
-      Question(
-        question: 'What is the capital of France?',
-        options: ['Berlin', 'Madrid', 'Paris'],
-        answerIndex: 2,
-      ),
-      Question(
-        question: 'Which planet is known as the Red Planet?',
-        options: ['Earth', 'Mars', 'Jupiter'],
-        answerIndex: 1,
-      ),
-      Question(
-        question: 'What is the largest mammal?',
-        options: ['Elephant', 'Blue Whale', 'Giraffe'],
-        answerIndex: 1,
-      ),
-      Question(
-        question: 'What is the chemical symbol for water?',
-        options: ['O2', 'H2O', 'CO2'],
-        answerIndex: 1,
-      ),
-      Question(
-        question: 'How many continents are there on Earth?',
-        options: ['5', '6', '7'],
-        answerIndex: 2,
-      ),
-    ];
+    state = _quizService.getQuestions();
   }
 
   void resetQuiz() {
@@ -113,11 +87,20 @@ class QuizNotifier extends StateNotifier<List<Question>> {
   bool get isQuizSubmitted => _isQuizSubmitted;
 
   void submitQuiz() {
-    resetQuiz();
     _isQuizSubmitted = true;
+  }
+
+  int? getNextUnexpiredQuestionIndex(int currentIndex) {
+    for (int i = currentIndex + 1; i < state.length; i++) {
+      if (!state[i].isExpired) return i;
+    }
+    for (int i = 0; i < currentIndex; i++) {
+      if (!state[i].isExpired) return i;
+    }
+    return null;
   }
 }
 
 final quizProvider = StateNotifierProvider<QuizNotifier, List<Question>>((ref) {
-  return QuizNotifier();
+  return QuizNotifier(QuizService());
 });
