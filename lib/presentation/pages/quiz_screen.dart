@@ -26,12 +26,7 @@ class _QuizScreenState extends State<QuizScreen> {
         final questions = watch(quizProvider);
         final quizNotifier = watch(quizProvider.notifier);
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (quizNotifier.allTimersExpired()) {
-            _showAllTimersExpiredDialog(context);
-          }
-        });
-
+       
         return Scaffold(
           appBar: AppBar(
             title: const Text('Quiz App'),
@@ -96,47 +91,6 @@ class _QuizScreenState extends State<QuizScreen> {
                     ],
                   ),
                 ),
-        );
-      },
-    );
-  }
-
-  void _showAllTimersExpiredDialog(BuildContext context) {
-    if (context.read(quizProvider.notifier).isQuizSubmitted) return;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Quiz Finished'),
-          content:
-              const Text('All the timers have expired. The quiz is finished.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                        builder: (context) => const ResultScreen()),
-                    (Route route) => false);
-              },
-              child: Container(
-                width: 80,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.white,
-                ),
-                child: const Center(
-                  child: Text(
-                    'OK',
-                    style: TextStyle(
-                        color: Color(0xFFE91E63),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
-          ],
         );
       },
     );

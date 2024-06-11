@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:quiz_app/data/models/question_model.dart';
 import 'package:quiz_app/domain/services/quiz_service.dart';
+import 'package:quiz_app/presentation/pages/result_screen.dart';
 import 'package:quiz_app/presentation/providers/quiz_provider.dart';
 
 class QuestionCard extends StatefulWidget {
@@ -63,7 +64,12 @@ class _QuestionCardState extends State<QuestionCard> {
 
         if (!widget.isQuizSubmitted) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _showExpirationDialog();
+            if (context.read(quizProvider.notifier).allTimersExpired() ==
+                true) {
+              _showAllTimersExpiredDialog(context);
+            } else {
+              _showExpirationDialog();
+            }
             context
                 .read(quizProvider.notifier)
                 .skipNextQuestion(widget.questionIndex);
@@ -82,7 +88,9 @@ class _QuestionCardState extends State<QuestionCard> {
 
   void _showExpirationDialog() {
     if (widget.isQuizSubmitted) return;
+
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -104,6 +112,48 @@ class _QuestionCardState extends State<QuestionCard> {
                   else
                     context.read(quizProvider.notifier).submitQuiz();
                 }
+              },
+              child: Container(
+                width: 80,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                ),
+                child: const Center(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                        color: Color(0xFFE91E63),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAllTimersExpiredDialog(BuildContext context) {
+    if (context.read(quizProvider.notifier).isQuizSubmitted) return;
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Quiz Finished'),
+          content:
+              const Text('All the timers have expired. The quiz is finished.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                        builder: (context) => const ResultScreen()),
+                    (Route route) => false);
               },
               child: Container(
                 width: 80,
