@@ -1,4 +1,3 @@
-
 class Question {
   final String question;
   final List<String> options;
@@ -6,6 +5,7 @@ class Question {
   int? selectedOption;
   bool isExpired;
   Duration timeLeft;
+  final Duration initialTime;
 
   Question({
     required this.question,
@@ -14,6 +14,7 @@ class Question {
     this.selectedOption,
     this.isExpired = false,
     this.timeLeft = const Duration(seconds: 10),
+    this.initialTime = const Duration(seconds: 10),
   });
 
   Question copyWith({
@@ -23,6 +24,7 @@ class Question {
     int? selectedOption,
     bool? isExpired,
     Duration? timeLeft,
+    Duration? initialTime,
   }) {
     return Question(
       question: question ?? this.question,
@@ -31,6 +33,7 @@ class Question {
       selectedOption: selectedOption ?? this.selectedOption,
       isExpired: isExpired ?? this.isExpired,
       timeLeft: timeLeft ?? this.timeLeft,
+      initialTime: initialTime ?? this.initialTime,
     );
   }
 }

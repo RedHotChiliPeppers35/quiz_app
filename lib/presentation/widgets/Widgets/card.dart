@@ -10,6 +10,7 @@ class QuestionCard extends StatefulWidget {
   final Question question;
   final ValueChanged<int> onOptionSelected;
   final bool isCurrent;
+  final bool isQuizSubmitted;
 
   const QuestionCard({
     Key? key,
@@ -17,6 +18,7 @@ class QuestionCard extends StatefulWidget {
     required this.question,
     required this.onOptionSelected,
     required this.isCurrent,
+    required this.isQuizSubmitted,
   }) : super(key: key);
 
   @override
@@ -53,25 +55,51 @@ class _QuestionCardState extends State<QuestionCard> {
         context
             .read(quizProvider.notifier)
             .expireQuestion(widget.questionIndex);
-
-        _showExpirationDialog();
+        if (!widget.isQuizSubmitted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showExpirationDialog();
+          });
+        }
       }
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _timer.cancel();
+  }
+
   void _showExpirationDialog() {
+    if (widget.isQuizSubmitted) return;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Time Up!'),
+          title: Text('Times Up!'),
           content: Text('The time for this question has expired.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: Container(
+                width: 80,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                ),
+                child: const Center(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                        color: Color(0xFFE91E63),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -80,19 +108,18 @@ class _QuestionCardState extends State<QuestionCard> {
   }
 
   @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Card(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LinearProgressIndicator(
-            value: _timeLeft.inSeconds / 10,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: LinearProgressIndicator(
+              backgroundColor: Colors.white,
+              color: const Color(0xFF3F51B5), // Indigo
+              value: _timeLeft.inSeconds / 10,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
