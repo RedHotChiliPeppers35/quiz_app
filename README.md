@@ -1,8 +1,4 @@
-# quiz_app
-
-A new Flutter project.
-
-## Getting Started
+READ ME
 Hi there,
 Firstly, I have not used riverpod before, therefore I searched for the architecture types which is suitable with riverpod and decided that “presentation – domain – data” is the most effective and efficient arch type. 
 
