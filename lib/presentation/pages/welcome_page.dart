@@ -51,6 +51,12 @@ class WelcomePage extends StatelessWidget {
                     height: 10,
                   ),
                   Text(
+                      "- Once a timer for a question expires, you will not able to return that question",
+                      style: TextStyle(fontSize: 17, color: Colors.white)),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
                       "- If you have answered all questions or all timers are expired, a submit button will appear at the bottom of the screen",
                       style: TextStyle(fontSize: 17, color: Colors.white)),
                 ],
