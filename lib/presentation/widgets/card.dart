@@ -101,16 +101,16 @@ class _QuestionCardState extends State<QuestionCard> {
               onPressed: () {
                 Navigator.of(context).pop();
                 if (widget.pageController.hasClients) {
-                  log("ATA");
                   int index = context
                       .read(quizProvider.notifier)
                       .nextAvailableQuestionIndex(widget.questionIndex);
-                  if (index != -1)
+                  if (index != -1) {
                     widget.pageController.animateToPage(index,
                         duration: const Duration(seconds: 1),
                         curve: Curves.easeIn);
-                  else
+                  } else {
                     context.read(quizProvider.notifier).submitQuiz();
+                  }
                 }
               },
               child: Container(
