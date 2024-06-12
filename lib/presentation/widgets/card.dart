@@ -1,9 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop_page_view/loop_page_view.dart';
 import 'package:quiz_app/data/models/question_model.dart';
-import 'package:quiz_app/domain/services/quiz_service.dart';
+
 import 'package:quiz_app/presentation/pages/result_screen.dart';
 import 'package:quiz_app/presentation/providers/quiz_provider.dart';
 
@@ -14,7 +15,7 @@ class QuestionCard extends StatefulWidget {
   final bool isCurrent;
   final bool isQuizSubmitted;
   final bool isSkip;
-  final PageController pageController;
+  final LoopPageController pageController;
 
   const QuestionCard({
     super.key,

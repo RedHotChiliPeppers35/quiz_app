@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loop_page_view/loop_page_view.dart';
 
 import 'package:quiz_app/presentation/Widgets/card.dart';
 import 'package:quiz_app/presentation/pages/result_screen.dart';
@@ -20,6 +21,7 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
+  final LoopPageController _loopPageController = LoopPageController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +43,19 @@ class _QuizScreenState extends State<QuizScreen> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.5,
-                        child: PageView.builder(
-                          controller: _pageController,
+                        child: LoopPageView.builder(
+                          controller: _loopPageController,
                           onPageChanged: (index) {
                             setState(() {
                               if (context
                                   .read(quizProvider.notifier)
                                   .isExpired(index)) {
-                                log("expired question");
-
                                 int myIndex = context
                                     .read(quizProvider.notifier)
                                     .nextAvailableQuestionIndex(index);
                                 log(myIndex.toString());
-                                if (_pageController.hasClients) {
-                                  _pageController.animateToPage(myIndex,
+                                if (_loopPageController.hasClients) {
+                                  _loopPageController.animateToPage(myIndex,
                                       duration: Duration(milliseconds: 10),
                                       curve: Curves.bounceIn);
                                 }
@@ -72,7 +72,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               width: MediaQuery.of(context).size.width * 0.9,
                               height: MediaQuery.of(context).size.height * 0.5,
                               child: QuestionCard(
-                                pageController: _pageController,
+                                pageController: _loopPageController,
                                 isSkip: _isSkip,
                                 questionIndex: index,
                                 question: question,
