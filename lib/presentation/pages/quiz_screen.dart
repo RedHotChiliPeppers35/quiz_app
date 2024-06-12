@@ -45,7 +45,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           controller: _pageController,
                           onPageChanged: (index) {
                             setState(() {
-                              // here
+
                               if (context
                                   .read(quizProvider.notifier)
                                   .isExpired(index)) {
