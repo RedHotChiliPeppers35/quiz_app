@@ -40,6 +40,10 @@ class QuizNotifier extends StateNotifier<List<Question>> {
     ];
   }
 
+  bool isExpired(int i) {
+    return state[i].isExpired;
+  }
+
   void expireQuestion(int questionIndex) {
     state = [
       for (int i = 0; i < state.length; i++)

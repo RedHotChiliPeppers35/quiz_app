@@ -1,5 +1,7 @@
 // lib/screens/quiz_screen.dart
 // lib/screens/quiz_screen.dart
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,7 +28,6 @@ class _QuizScreenState extends State<QuizScreen> {
         final questions = watch(quizProvider);
         final quizNotifier = watch(quizProvider.notifier);
 
-       
         return Scaffold(
           appBar: AppBar(
             title: const Text('Quiz App'),
@@ -44,7 +45,24 @@ class _QuizScreenState extends State<QuizScreen> {
                           controller: _pageController,
                           onPageChanged: (index) {
                             setState(() {
+                              // here
+                              if (context
+                                  .read(quizProvider.notifier)
+                                  .isExpired(index)) {
+                                log("expired question");
+
+                                int myIndex = context
+                                    .read(quizProvider.notifier)
+                                    .nextAvailableQuestionIndex(index);
+                                log(myIndex.toString());
+                                if (_pageController.hasClients) {
+                                  _pageController.animateToPage(myIndex,
+                                      duration: Duration(milliseconds: 10),
+                                      curve: Curves.bounceIn);
+                                }
+                              }
                               _currentIndex = index;
+                              log(_currentIndex.toString());
                             });
                           },
                           itemCount: questions.length,
