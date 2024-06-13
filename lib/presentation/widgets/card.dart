@@ -54,9 +54,10 @@ class _QuestionCardState extends State<QuestionCard> {
               .read(quizProvider.notifier)
               .updateTimer(widget.questionIndex, _timeLeft);
         });
-      } else {
-        _timer.cancel();
+      } else if(_timeLeft.inSeconds == 0) {
+       
         setState(() {
+           _timer.cancel();
           widget.question.isExpired = true;
         });
         context
